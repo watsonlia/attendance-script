@@ -55,8 +55,16 @@ def mark_attendance():
         print(f"📌 Marking attendance for {kod_subjek} ({mod_kelas}) at {current_hour}:00")
 
         # Start Selenium WebDriver
+        from selenium.webdriver.chrome.options import Options
+
+        # Set Chrome options for headless mode
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")  # Run without GUI
+        chrome_options.add_argument("--no-sandbox")  # Required for cloud environments
+        chrome_options.add_argument("--disable-dev-shm-usage")  # Prevents crashes in containers
+
         service = Service(CHROMEDRIVER_PATH)
-        driver = webdriver.Chrome(service=service)
+        driver = webdriver.Chrome(service=service, options=chrome_options)
         driver.get("https://www.phyvis2.com/hadirkmk")
 
         try:
