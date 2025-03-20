@@ -1,20 +1,21 @@
+import sys  # Redirect print statements to GitHub Actions log
+sys.stdout = sys.stderr
+
+import time
+import schedule
+import datetime
+import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
-import time
-import schedule
-import datetime
-import requests
+from selenium.webdriver.chrome.options import Options
 
-print("✅ Attendance script is running...")
+print("✅ Attendance script is running on GitHub Actions...")
 
 # Your matric number
 MATRIC_NO = "MS2418123549"
-
-# Path to ChromeDriver (Manually specify location)
-CHROMEDRIVER_PATH = "./chromedriver"  # Windows users may need "chromedriver.exe"
 
 # Function to check internet connection
 def check_internet():
@@ -54,17 +55,15 @@ def mark_attendance():
         kod_subjek, mod_kelas = TIMETABLE[today][current_hour]
         print(f"📌 Marking attendance for {kod_subjek} ({mod_kelas}) at {current_hour}:00")
 
-        # Start Selenium WebDriver
-        from selenium.webdriver.chrome.options import Options
-
         # Set Chrome options for headless mode
         chrome_options = Options()
         chrome_options.add_argument("--headless")  # Run without GUI
         chrome_options.add_argument("--no-sandbox")  # Required for cloud environments
-        chrome_options.add_argument("--disable-dev-shm-usage")  # Prevents crashes in containers
+        chrome_options.add_argument("--disable-dev-shm-usage")  # Prevent crashes in limited resources
+        chrome_options.add_argument("--remote-debugging-port=9222")  # Debugging
 
-        service = Service(CHROMEDRIVER_PATH)
-        driver = webdriver.Chrome(service=service, options=chrome_options)
+        # Initialize WebDriver
+        driver = webdriver.Chrome(options=chrome_options)
         driver.get("https://www.phyvis2.com/hadirkmk")
 
         try:
@@ -104,8 +103,11 @@ def mark_attendance():
     else:
         print(f"⏳ No class at {current_hour}:00, skipping attendance.")
 
-# Run the scheduler
-while True:
+# Run the scheduler (For max 5 hours)
+start_time = datetime.datetime.now()
+max_runtime = 5 * 60 * 60  # 5 hours in seconds
+
+while (datetime.datetime.now() - start_time).total_seconds() < max_runtime:
     now = datetime.datetime.now().strftime("%H:%M")
     for hour in range(8, 18):
         if now == f"{hour:02d}:00":
@@ -113,5 +115,7 @@ while True:
     schedule.run_pending()
     print(f"⏳ Checking attendance at {datetime.datetime.now().strftime('%H:%M:%S')}")
     time.sleep(60)  # Check every 60 seconds
+
+print("✅ Attendance script finished running after 5 hours.")
 #cd C:\Users\Kim\PycharmProjects\pythonProject
 #to run in control panel
