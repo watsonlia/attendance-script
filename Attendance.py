@@ -107,13 +107,24 @@ def mark_attendance():
 start_time = datetime.datetime.now()
 max_runtime = 5 * 60 * 60  # 5 hours in seconds
 
+import pytz
+
+# Set your local time zone (e.g., "Asia/Kuala_Lumpur")
+LOCAL_TZ = pytz.timezone("Asia/Kuala_Lumpur")
+
 while (datetime.datetime.now() - start_time).total_seconds() < max_runtime:
-    now = datetime.datetime.now().strftime("%H:%M")
+    # Get the current local time
+    now_local = datetime.datetime.now(LOCAL_TZ)
+    now = now_local.strftime("%H:%M")
+    current_hour = now_local.hour
+
+    # Check attendance for the current hour
     for hour in range(8, 18):
         if now == f"{hour:02d}:00":
             mark_attendance()
+
     schedule.run_pending()
-    print(f"⏳ Checking attendance at {datetime.datetime.now().strftime('%H:%M:%S')}")
+    print(f"⏳ Checking attendance at {now_local.strftime('%H:%M:%S')}")
     time.sleep(60)  # Check every 60 seconds
 
 print("✅ Attendance script finished running after 5 hours.")
