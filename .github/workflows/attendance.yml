@@ -1,9 +1,7 @@
 name: Run Attendance Script
 
 on:
-  schedule:
-    - cron: "0 */4 * * *"  # Runs every 4 hours (change if needed)
-  workflow_dispatch:  # Allows manual execution
+  workflow_dispatch:  # Allows manual execution only
 
 jobs:
   run-script:
