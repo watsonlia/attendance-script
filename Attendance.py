@@ -11,6 +11,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import Select
+import pytz
 
 print("✅ Attendance script is running on GitHub Actions...")
 
@@ -30,16 +32,16 @@ def check_internet():
 
 # Timetable dictionary (Day -> Hour -> (Kod Subjek, Mod Kelas))
 TIMETABLE = {
-    "Sunday": {8: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"), 9: ("KIMIA 2 (SDS)", "Kuliah"), 10: ("FIZIK 2 (SDS)", "Amali"), 11: ("FIZIK 2", "Amali"),
-               12: ("BAHASA INGGERIS 2 (SDS)", "Tutorial"), 2: ("BAHASA INGGERIS 2 (SDS)", "Tutorial")},
-    "Monday": {8: ("FIZIK 2 (SDS)", "Tutorial"), 9: ("KIMIA 2", "Kuliah"), 10: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"),
-               12: ("SM025 : MATHEMATICS 2 (SAINS)", "Kuliah"), 1: ("KIMIA 2 (SDS)", "Kuliah"), 2: ("COMPUTER SCIENCE 2", "Kuliah")},
-    "Tuesday": {8: ("KIMIA 2 (SDS)", "Amali"), 9: ("KIMIA 2 (SDS)", "Amali"), 10: ("FIZIK 2 (SDS)", "Tutorial"),
-                12: ("BAHASA INGGERIS 2 (SDS)", "Tutorial"), 2: ("COMPUTER SCIENCE 2", "Amali"), 3: ("COMPUTER SCIENCE 2", "Amali")},
-    "Wednesday": {8: ("FIZIK 2 (SDS)", "Tutorial"), 9: ("FIZIK 2 (SDS)", "Kuliah"), 10: ("KIMIA 2 (SDS)", "Kuliah"),
-                  11: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"), 12: ("BAHASA INGGERIS 2 (SDS)", "Tutorial")},
-    "Thursday": {8: ("SM025 : MATHEMATICS 2 (SAINS)", "Kuliah"), 9: ("COMPUTER SCIENCE 2", "Tutorial"), 10: ("KIMIA 2 (SDS)", "Tutorial"),
-                 12: ("FIZIK 2 (SDS)", "Tutorial")},
+    "Sunday": {8: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"), 9: ("SK025 : KIMIA 2 (SDS)", "Kuliah"), 10: ("SP025 : FIZIK 2 (SDS)", "Amali"), 11: ("SP025 : FIZIK 2 (SDS)", "Amali"),
+               12: ("WE023 : BAHASA INGGERIS 2 (SDS)", "Tutorial"),
+    "Monday": {8: ("SP025 : FIZIK 2 (SDS)", "Tutorial"), 9: ("SK025 : KIMIA 2 (SDS)", "Kuliah"), 10: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"),
+               12: ("SM025 : MATHEMATICS 2 (SAINS)", "Kuliah"), 1: ("KIMIA 2 (SDS)", "Kuliah"), 2: ("SC025 : COMPUTER SCIENCE 2", "Kuliah")},
+    "Tuesday": {8: ("SK025 : KIMIA 2 (SDS)", "Amali"), 9: ("SK025 : KIMIA 2 (SDS)", "Amali"), 10: ("SP025 : FIZIK 2 (SDS)", "Tutorial"),
+                12: ("WE023 : BAHASA INGGERIS 2 (SDS)", "Tutorial"), 2: ("SC025 : COMPUTER SCIENCE 2", "Amali"), 3: ("SC025 : COMPUTER SCIENCE 2", "Amali")},
+    "Wednesday": {8: ("SP025 : FIZIK 2 (SDS)", "Tutorial"), 9: ("SP025 : FIZIK 2 (SDS)", "Kuliah"), 10: ("SK025 : KIMIA 2 (SDS)", "Kuliah"),
+                  11: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"), 12: ("WE023 : BAHASA INGGERIS 2 (SDS)", "Tutorial")},
+    "Thursday": {8: ("SM025 : MATHEMATICS 2 (SAINS)", "Kuliah"), 9: ("SC025 : COMPUTER SCIENCE 2", "Tutorial"), 10: ("SK025 : KIMIA 2 (SDS)", "Tutorial"),
+                 12: ("SP025 : FIZIK 2 (SDS)", "Tutorial")},
 }
 
 # Function to mark attendance
@@ -73,27 +75,33 @@ def mark_attendance():
             )
             matric_input.send_keys(MATRIC_NO)
 
-            # Enter "Kod Subjek"
-            kod_subjek_input = WebDriverWait(driver, 10).until(
+            # Select "Kod Subjek" from dropdown
+            kod_subjek_dropdown = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.NAME, "Pilih Kod Subjek"))
             )
-            kod_subjek_input.send_keys(kod_subjek)
+            select_kod_subjek = Select(kod_subjek_dropdown)
+            select_kod_subjek.select_by_visible_text(kod_subjek)
 
-            # Enter "Mod Kelas"
-            mod_kelas_input = WebDriverWait(driver, 10).until(
+            # Select "Mod Kelas" from dropdown
+            mod_kelas_dropdown = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.NAME, "Pilih Mode Kelas"))
             )
-            mod_kelas_input.send_keys(mod_kelas)
+            select_mod_kelas = Select(mod_kelas_dropdown)
+            select_mod_kelas.select_by_visible_text(mod_kelas)
 
-            # Click "Hadir" if available
-            try:
-                Saya_Hadir_button = WebDriverWait(driver, 5).until(
-                    EC.element_to_be_clickable((By.NAME, "Saya Hadir"))
-                )
-                Saya_Hadir_button.click()
-                print("✅ Attendance marked successfully!")
-            except:
-                print("⚠️ No 'Hadir' button found. Skipping this session.")
+            # Click "Cari" button
+            cari_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.NAME, "Cari"))
+            )
+            cari_button.click()
+            print("✅ 'Cari' button clicked.")
+
+            # Click "Saya Hadir" button
+            Saya_Hadir_button = WebDriverWait(driver, 5).until(
+                EC.element_to_be_clickable((By.NAME, "Saya Hadir"))
+            )
+            Saya_Hadir_button.click()
+            print("✅ Attendance marked successfully!")
 
         except Exception as e:
             print(f"❌ Failed to mark attendance: {e}")
@@ -106,8 +114,6 @@ def mark_attendance():
 # Run the scheduler (For max 5 hours)
 start_time = datetime.datetime.now()
 max_runtime = 5 * 60 * 60  # 5 hours in seconds
-
-import pytz
 
 # Set your local time zone (e.g., "Asia/Kuala_Lumpur")
 LOCAL_TZ = pytz.timezone("Asia/Kuala_Lumpur")
@@ -128,5 +134,6 @@ while (datetime.datetime.now() - start_time).total_seconds() < max_runtime:
     time.sleep(60)  # Check every 60 seconds
 
 print("✅ Attendance script finished running after 5 hours.")
+
 #cd C:\Users\Kim\PycharmProjects\pythonProject
 #to run in control panel
