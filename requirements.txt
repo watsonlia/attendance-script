@@ -2,3 +2,4 @@ selenium
 schedule
 requests
 webdriver-manager
+pytz
