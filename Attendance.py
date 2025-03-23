@@ -30,15 +30,15 @@ def check_internet():
 
 # Timetable dictionary (Day -> Hour -> (Kod Subjek, Mod Kelas))
 TIMETABLE = {
-    "Sunday": {8: ("MATHEMATICS 2 (SAINS)", "Tutorial"), 9: ("KIMIA 2 (SDS)", "Kuliah"), 10: ("FIZIK 2 (SDS)", "Amali"), 11: ("FIZIK 2", "Amali"),
+    "Sunday": {8: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"), 9: ("KIMIA 2 (SDS)", "Kuliah"), 10: ("FIZIK 2 (SDS)", "Amali"), 11: ("FIZIK 2", "Amali"),
                12: ("BAHASA INGGERIS 2 (SDS)", "Tutorial"), 2: ("BAHASA INGGERIS 2 (SDS)", "Tutorial")},
-    "Monday": {8: ("FIZIK 2 (SDS)", "Tutorial"), 9: ("KIMIA 2", "Kuliah"), 10: ("MATHEMATICS 2 (SAINS)", "Tutorial"),
-               12: ("MATHEMATICS 2 (SAINS)", "Kuliah"), 1: ("KIMIA 2 (SDS)", "Kuliah"), 2: ("COMPUTER SCIENCE 2", "Kuliah")},
+    "Monday": {8: ("FIZIK 2 (SDS)", "Tutorial"), 9: ("KIMIA 2", "Kuliah"), 10: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"),
+               12: ("SM025 : MATHEMATICS 2 (SAINS)", "Kuliah"), 1: ("KIMIA 2 (SDS)", "Kuliah"), 2: ("COMPUTER SCIENCE 2", "Kuliah")},
     "Tuesday": {8: ("KIMIA 2 (SDS)", "Amali"), 9: ("KIMIA 2 (SDS)", "Amali"), 10: ("FIZIK 2 (SDS)", "Tutorial"),
                 12: ("BAHASA INGGERIS 2 (SDS)", "Tutorial"), 2: ("COMPUTER SCIENCE 2", "Amali"), 3: ("COMPUTER SCIENCE 2", "Amali")},
     "Wednesday": {8: ("FIZIK 2 (SDS)", "Tutorial"), 9: ("FIZIK 2 (SDS)", "Kuliah"), 10: ("KIMIA 2 (SDS)", "Kuliah"),
-                  11: ("MATHEMATICS 2 (SAINS)", "Tutorial"), 12: ("BAHASA INGGERIS 2 (SDS)", "Tutorial")},
-    "Thursday": {8: ("MATHEMATICS 2 (SAINS)", "Kuliah"), 9: ("COMPUTER SCIENCE 2", "Tutorial"), 10: ("KIMIA 2 (SDS)", "Tutorial"),
+                  11: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"), 12: ("BAHASA INGGERIS 2 (SDS)", "Tutorial")},
+    "Thursday": {8: ("SM025 : MATHEMATICS 2 (SAINS)", "Kuliah"), 9: ("COMPUTER SCIENCE 2", "Tutorial"), 10: ("KIMIA 2 (SDS)", "Tutorial"),
                  12: ("FIZIK 2 (SDS)", "Tutorial")},
 }
 
@@ -81,16 +81,16 @@ def mark_attendance():
 
             # Enter "Mod Kelas"
             mod_kelas_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.NAME, "pilih mode kelas"))
+                EC.presence_of_element_located((By.NAME, "Pilih Mode Kelas"))
             )
             mod_kelas_input.send_keys(mod_kelas)
 
             # Click "Hadir" if available
             try:
                 Saya_Hadir_button = WebDriverWait(driver, 5).until(
-                    EC.element_to_be_clickable((By.NAME, "saya hadir"))
+                    EC.element_to_be_clickable((By.NAME, "Saya Hadir"))
                 )
-                Saya_Hadir_button.click()
+                Saya Hadir_button.click()
                 print("✅ Attendance marked successfully!")
             except:
                 print("⚠️ No 'Hadir' button found. Skipping this session.")
