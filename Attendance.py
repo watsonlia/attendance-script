@@ -32,16 +32,43 @@ def check_internet():
 
 # Timetable dictionary (Day -> Hour -> (Kod Subjek, Mod Kelas))
 TIMETABLE = {
-    "Sunday": {8: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"), 9: ("SK025 : KIMIA 2 (SDS)", "Kuliah"), 10: ("SP025 : FIZIK 2 (SDS)", "Amali"), 11: ("SP025 : FIZIK 2 (SDS)", "Amali"),
-               12: ("WE023 : BAHASA INGGERIS 2 (SDS)", "Tutorial"),
-    "Monday": {8: ("SP025 : FIZIK 2 (SDS)", "Tutorial"), 9: ("SK025 : KIMIA 2 (SDS)", "Kuliah"), 10: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"),
-               12: ("SM025 : MATHEMATICS 2 (SAINS)", "Kuliah"), 1: ("KIMIA 2 (SDS)", "Kuliah"), 2: ("SC025 : COMPUTER SCIENCE 2", "Kuliah")},
-    "Tuesday": {8: ("SK025 : KIMIA 2 (SDS)", "Amali"), 9: ("SK025 : KIMIA 2 (SDS)", "Amali"), 10: ("SP025 : FIZIK 2 (SDS)", "Tutorial"),
-                12: ("WE023 : BAHASA INGGERIS 2 (SDS)", "Tutorial"), 2: ("SC025 : COMPUTER SCIENCE 2", "Amali"), 3: ("SC025 : COMPUTER SCIENCE 2", "Amali")},
-    "Wednesday": {8: ("SP025 : FIZIK 2 (SDS)", "Tutorial"), 9: ("SP025 : FIZIK 2 (SDS)", "Kuliah"), 10: ("SK025 : KIMIA 2 (SDS)", "Kuliah"),
-                  11: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"), 12: ("WE023 : BAHASA INGGERIS 2 (SDS)", "Tutorial")},
-    "Thursday": {8: ("SM025 : MATHEMATICS 2 (SAINS)", "Kuliah"), 9: ("SC025 : COMPUTER SCIENCE 2", "Tutorial"), 10: ("SK025 : KIMIA 2 (SDS)", "Tutorial"),
-                 12: ("SP025 : FIZIK 2 (SDS)", "Tutorial")},
+    "Sunday": {
+        8: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"),
+        9: ("KIMIA 2 (SDS)", "Kuliah"),
+        10: ("FIZIK 2 (SDS)", "Amali"),
+        11: ("FIZIK 2", "Amali"),
+        12: ("BAHASA INGGERIS 2 (SDS)", "Tutorial"),
+        14: ("BAHASA INGGERIS 2 (SDS)", "Tutorial"),
+    },
+    "Monday": {
+        8: ("FIZIK 2 (SDS)", "Tutorial"),
+        9: ("KIMIA 2", "Kuliah"),
+        10: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"),
+        12: ("SM025 : MATHEMATICS 2 (SAINS)", "Kuliah"),
+        13: ("KIMIA 2 (SDS)", "Kuliah"),
+        14: ("COMPUTER SCIENCE 2", "Kuliah"),
+    },
+    "Tuesday": {
+        8: ("KIMIA 2 (SDS)", "Amali"),
+        9: ("KIMIA 2 (SDS)", "Amali"),
+        10: ("FIZIK 2 (SDS)", "Tutorial"),
+        12: ("BAHASA INGGERIS 2 (SDS)", "Tutorial"),
+        14: ("COMPUTER SCIENCE 2", "Amali"),
+        15: ("COMPUTER SCIENCE 2", "Amali"),
+    },
+    "Wednesday": {
+        8: ("FIZIK 2 (SDS)", "Tutorial"),
+        9: ("FIZIK 2 (SDS)", "Kuliah"),
+        10: ("KIMIA 2 (SDS)", "Kuliah"),
+        11: ("SM025 : MATHEMATICS 2 (SAINS)", "Tutorial"),
+        12: ("BAHASA INGGERIS 2 (SDS)", "Tutorial"),
+    },
+    "Thursday": {
+        8: ("SM025 : MATHEMATICS 2 (SAINS)", "Kuliah"),
+        9: ("COMPUTER SCIENCE 2", "Tutorial"),
+        10: ("KIMIA 2 (SDS)", "Tutorial"),
+        12: ("FIZIK 2 (SDS)", "Tutorial"),
+    },
 }
 
 # Function to mark attendance
@@ -134,6 +161,7 @@ while (datetime.datetime.now() - start_time).total_seconds() < max_runtime:
     time.sleep(60)  # Check every 60 seconds
 
 print("✅ Attendance script finished running after 5 hours.")
+
 
 #cd C:\Users\Kim\PycharmProjects\pythonProject
 #to run in control panel
