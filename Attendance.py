@@ -90,7 +90,7 @@ def mark_attendance():
                 Saya_Hadir_button = WebDriverWait(driver, 5).until(
                     EC.element_to_be_clickable((By.NAME, "Saya Hadir"))
                 )
-                Saya Hadir_button.click()
+                Saya_Hadir_button.click()
                 print("✅ Attendance marked successfully!")
             except:
                 print("⚠️ No 'Hadir' button found. Skipping this session.")
