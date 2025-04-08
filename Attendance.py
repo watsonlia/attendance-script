@@ -89,10 +89,9 @@ def mark_attendance():
                     )
                     Saya_Hadir_button.click()
                     print(f"✅ Attendance marked for {kod} ({mod})!")
-                    time.sleep(3600)  # Sleep for 1 hour
                     driver.quit()
-                    return  # Exit after successful submission
-                except:
+                    return
+               except:
                     pass  # No button, move to next combination
 
         print("⚠️ No valid combination found. Skipping this attempt.")
