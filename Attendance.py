@@ -47,58 +47,57 @@ def mark_attendance():
     driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://www.phyvis2.com/hadirkmk")
 
-    try:
-        # Enter Matric Number
-        matric_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "Masukkan no matrik"))
-        )
-        matric_input.send_keys(MATRIC_NO)
+            try:
+            # Enter Matric Number
+            matric_input = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.NAME, "Masukkan no matrik"))
+            )
+            matric_input.send_keys(MATRIC_NO)
 
-        # Get all options from Kod Subjek dropdown
-        kod_subjek_dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "Pilih Kod Subjek"))
-        )
-        select_kod_subjek = Select(kod_subjek_dropdown)
-        kod_subjek_options = [o.text for o in select_kod_subjek.options if o.text.strip() != ""]
+            # Loop through dropdown options
+            kod_subjek_dropdown = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.NAME, "Pilih Kod Subjek"))
+            )
+            select_kod = Select(kod_subjek_dropdown)
+            kod_options = select_kod.options
 
-        # Get all options from Mod Kelas dropdown
-        mod_kelas_dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "Pilih Mode Kelas"))
-        )
-        select_mod_kelas = Select(mod_kelas_dropdown)
-        mod_kelas_options = [o.text for o in select_mod_kelas.options if o.text.strip() != ""]
+            mod_kelas_dropdown = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.NAME, "Pilih Mode Kelas"))
+            )
+            select_mod = Select(mod_kelas_dropdown)
+            mod_options = select_mod.options
 
-        # Try all combinations of Kod Subjek and Mod Kelas
-        for kod in kod_subjek_options:
-            for mod in mod_kelas_options:
-                try:
-                    # Select current combination
-                    select_kod_subjek.select_by_visible_text(kod)
-                    select_mod_kelas.select_by_visible_text(mod)
+            for kod in kod_options:
+                for mod in mod_options:
+                    try:
+                        select_kod.select_by_visible_text(kod.text)
+                        select_mod.select_by_visible_text(mod.text)
 
-                    # Click "Cari"
-                    cari_button = WebDriverWait(driver, 5).until(
-                        EC.element_to_be_clickable((By.NAME, "Cari"))
-                    )
-                    cari_button.click()
-                    print(f"🔍 Tried {kod} ({mod})...")
+                        # Click "Cari"
+                        cari_button = WebDriverWait(driver, 5).until(
+                            EC.element_to_be_clickable((By.NAME, "Cari"))
+                        )
+                        cari_button.click()
+                        time.sleep(1)
 
-                    # Check for "Saya Hadir" button
-                    Saya_Hadir_button = WebDriverWait(driver, 5).until(
-                        EC.element_to_be_clickable((By.NAME, "Saya Hadir"))
-                    )
-                    Saya_Hadir_button.click()
-                    print(f"✅ Attendance marked for {kod} ({mod})!")
-                    driver.quit()
-                    return
-               except:
-                    pass  # No button, move to next combination
+                        # Try to find "Saya Hadir" button
+                        hadir_button = WebDriverWait(driver, 3).until(
+                            EC.element_to_be_clickable((By.NAME, "Saya Hadir"))
+                        )
+                        hadir_button.click()
+                        print(f"✅ Attendance marked for {kod.text} ({mod.text})!")
+                        driver.quit()
+                        return  # Exit after success
 
-        print("⚠️ No valid combination found. Skipping this attempt.")
-    except Exception as e:
-        print(f"❌ Error during attendance marking: {e}")
-    finally:
-        driver.quit()
+                    except:
+                        continue  # Try next combination
+
+            print("⚠️ No valid attendance combo found, skipping this hour.")
+            driver.quit()
+
+        except Exception as e:
+            print(f"❌ Failed to mark attendance: {e}")
+            driver.quit()
 
 #cd C:\Users\Kim\PycharmProjects\pythonProject
 #to run in control panel
