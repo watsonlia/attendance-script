@@ -18,14 +18,12 @@ jobs:
         with:
           python-version: "3.10"
 
-      # Install Chrome version 113
-      - name: Install Google Chrome 113
+      # Install Latest Stable Chrome
+      - name: Install Google Chrome
         run: |
           sudo apt-get remove -y google-chrome-stable
-          
-          # Try downloading version 113
-          wget https://dl.google.com/linux/direct/google-chrome-stable_113.0.5672.93-1_amd64.deb -O chrome_deb
-          sudo dpkg -i chrome_deb
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb
           google-chrome --version  # To verify the installed version
 
       # Install dependencies
@@ -38,4 +36,3 @@ jobs:
 
       # Run the Attendance script
       - name: Run Attendance Script
-        run: python Attendance.py
