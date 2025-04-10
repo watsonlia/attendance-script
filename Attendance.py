@@ -12,10 +12,25 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 import pytz
+import subprocess
+import re
 
 print("✅ Attendance script is running on GitHub Actions...")
 
 MATRIC_NO = "MS2418123549"
+
+def get_chrome_version():
+    try:
+        output = subprocess.check_output("chromium-browser --version || chromium --version || google-chrome --version", shell=True).decode()
+        match = re.search(r"(\d+\.\d+\.\d+\.\d+)", output)
+        if match:
+            version = match.group(1)
+            major_version = version.split(".")[0]
+            print(f"🌐 Detected Chrome version: {version}")
+            return major_version
+    except Exception as e:
+        print(f"⚠️ Failed to detect Chrome version: {e}")
+    return None
 
 def check_internet():
     for _ in range(3):
@@ -37,22 +52,21 @@ def mark_attendance():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    # Attempt to fetch the version of ChromeDriver
-    driver_version = ChromeDriverManager().install()
-    print(f"Using ChromeDriver version: {driver_version}")
+    chrome_version = get_chrome_version()
+    if chrome_version:
+        driver_path = ChromeDriverManager(version=chrome_version).install()
+    else:
+        driver_path = ChromeDriverManager().install()
 
-    # Use the installed ChromeDriver
-    driver = webdriver.Chrome(service=Service(driver_version), options=chrome_options)
+    driver = webdriver.Chrome(service=Service(driver_path), options=chrome_options)
     driver.get("https://www.phyvis2.com/hadirkmk")
 
     try:
-        # Matric number input
         matric_input = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.NAME, "Masukkan no matrik"))
         )
         matric_input.send_keys(MATRIC_NO)
 
-        # Select dropdowns
         kod_dropdown = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.NAME, "Pilih Kod Subjek"))
         )
