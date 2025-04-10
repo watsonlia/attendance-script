@@ -18,12 +18,11 @@ jobs:
         with:
           python-version: "3.10"
 
-      # Install specific version of Google Chrome (version 135)
-      - name: Install Google Chrome 135
+      # Install the latest version of Google Chrome
+      - name: Install Latest Google Chrome
         run: |
-          # Download and install the specific version of Chrome 135
-          wget https://dl.google.com/linux/direct/google-chrome-stable_135.0.7049.0-1_amd64.deb
-          sudo apt install -y ./google-chrome-stable_135.0.7049.0-1_amd64.deb
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt install -y ./google-chrome-stable_current_amd64.deb
           google-chrome --version
 
       # Install dependencies
