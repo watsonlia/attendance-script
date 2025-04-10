@@ -55,11 +55,11 @@ def mark_attendance():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-   driver_path = ChromeDriverManager().install()
-
-
+    # Remove version passing and let ChromeDriverManager detect the version automatically
+    driver_path = ChromeDriverManager().install()
     driver = webdriver.Chrome(service=Service(driver_path), options=chrome_options)
     driver.get("https://www.phyvis2.com/hadirkmk")
+
 
     try:
         matric_input = WebDriverWait(driver, 10).until(
