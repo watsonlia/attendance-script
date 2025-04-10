@@ -67,76 +67,77 @@ def mark_attendance():
     try:
         driver = webdriver.Chrome(service=Service(driver_path), options=chrome_options)
         driver.get("https://www.phyvis2.com/hadirkmk")
-        # Continue with the rest of your script...
+        
+        try:
+            matric_input = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.NAME, "Masukkan no matrik"))
+            )
+            matric_input.send_keys(MATRIC_NO)
 
+            kod_dropdown = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.NAME, "Pilih Kod Subjek"))
+            )
+            mod_dropdown = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.NAME, "Pilih Mode Kelas"))
+            )
 
-    try:
-        matric_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "Masukkan no matrik"))
-        )
-        matric_input.send_keys(MATRIC_NO)
+            select_kod = Select(kod_dropdown)
+            select_mod = Select(mod_dropdown)
 
-        kod_dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "Pilih Kod Subjek"))
-        )
-        mod_dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "Pilih Mode Kelas"))
-        )
+            kod_options = [o.text for o in select_kod.options if o.text.strip()]
+            mod_options = [o.text for o in select_mod.options if o.text.strip()]
 
-        select_kod = Select(kod_dropdown)
-        select_mod = Select(mod_dropdown)
-
-        kod_options = [o.text for o in select_kod.options if o.text.strip()]
-        mod_options = [o.text for o in select_mod.options if o.text.strip()]
-
-        for kod in kod_options:
-            for mod in mod_options:
-                try:
-                    driver.get("https://www.phyvis2.com/hadirkmk")
-
-                    matric_input = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.NAME, "Masukkan no matrik"))
-                    )
-                    matric_input.send_keys(MATRIC_NO)
-
-                    kod_dropdown = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.NAME, "Pilih Kod Subjek"))
-                    )
-                    select_kod = Select(kod_dropdown)
-                    select_kod.select_by_visible_text(kod)
-
-                    mod_dropdown = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.NAME, "Pilih Mode Kelas"))
-                    )
-                    select_mod = Select(mod_dropdown)
-                    select_mod.select_by_visible_text(mod)
-
-                    cari_button = WebDriverWait(driver, 10).until(
-                        EC.element_to_be_clickable((By.NAME, "Cari"))
-                    )
-                    cari_button.click()
-                    print(f"🔍 Tried {kod} | {mod}")
-
+            for kod in kod_options:
+                for mod in mod_options:
                     try:
-                        hadir_button = WebDriverWait(driver, 3).until(
-                            EC.element_to_be_clickable((By.NAME, "Saya Hadir"))
-                        )
-                        hadir_button.click()
-                        print("✅ Attendance marked successfully!")
-                        driver.quit()
-                        return True
-                    except Exception as e:
-                        print(f"⚠️ Error marking attendance for {kod} | {mod}: {e}")
-                        continue
-                except Exception as e:
-                    print(f"⚠️ Error with {kod} / {mod}: {e}")
-                    continue
+                        driver.get("https://www.phyvis2.com/hadirkmk")
 
-        print("❌ No valid combination found. Skipping.")
+                        matric_input = WebDriverWait(driver, 10).until(
+                            EC.presence_of_element_located((By.NAME, "Masukkan no matrik"))
+                        )
+                        matric_input.send_keys(MATRIC_NO)
+
+                        kod_dropdown = WebDriverWait(driver, 10).until(
+                            EC.presence_of_element_located((By.NAME, "Pilih Kod Subjek"))
+                        )
+                        select_kod = Select(kod_dropdown)
+                        select_kod.select_by_visible_text(kod)
+
+                        mod_dropdown = WebDriverWait(driver, 10).until(
+                            EC.presence_of_element_located((By.NAME, "Pilih Mode Kelas"))
+                        )
+                        select_mod = Select(mod_dropdown)
+                        select_mod.select_by_visible_text(mod)
+
+                        cari_button = WebDriverWait(driver, 10).until(
+                            EC.element_to_be_clickable((By.NAME, "Cari"))
+                        )
+                        cari_button.click()
+                        print(f"🔍 Tried {kod} | {mod}")
+
+                        try:
+                            hadir_button = WebDriverWait(driver, 3).until(
+                                EC.element_to_be_clickable((By.NAME, "Saya Hadir"))
+                            )
+                            hadir_button.click()
+                            print("✅ Attendance marked successfully!")
+                            driver.quit()
+                            return True
+                        except Exception as e:
+                            print(f"⚠️ Error marking attendance for {kod} | {mod}: {e}")
+                            continue
+                    except Exception as e:
+                        print(f"⚠️ Error with {kod} / {mod}: {e}")
+                        continue
+
+            print("❌ No valid combination found. Skipping.")
+        except Exception as e:
+            print(f"❌ Failed to load page: {e}")
+        finally:
+            driver.quit()
     except Exception as e:
-        print(f"❌ Failed to load page: {e}")
-    finally:
-        driver.quit()
+        print(f"❌ Failed to initialize driver: {e}")
+        return False
 
     return False
 
