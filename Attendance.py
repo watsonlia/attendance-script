@@ -55,8 +55,18 @@ def mark_attendance():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    # Remove version passing and let ChromeDriverManager detect the version automatically
-    driver_path = ChromeDriverManager().install()
+    chrome_version = get_chrome_version()
+    
+    if chrome_version:
+        try:
+            driver_path = ChromeDriverManager(version=chrome_version).install()
+        except ValueError as e:
+            print(f"⚠️ Error with ChromeDriverManager: {e}")
+            driver_path = ChromeDriverManager().install()  # Fallback to latest available driver
+    else:
+        print("⚠️ Chrome version could not be detected. Using latest driver.")
+        driver_path = ChromeDriverManager().install()
+
     driver = webdriver.Chrome(service=Service(driver_path), options=chrome_options)
     driver.get("https://www.phyvis2.com/hadirkmk")
 
@@ -112,41 +122,3 @@ def mark_attendance():
                         hadir_button = WebDriverWait(driver, 3).until(
                             EC.element_to_be_clickable((By.NAME, "Saya Hadir"))
                         )
-                        hadir_button.click()
-                        print("✅ Attendance marked successfully!")
-                        driver.quit()
-                        return True
-                    except Exception as e:
-                        print(f"⚠️ Error marking attendance for {kod} | {mod}: {e}")
-                        continue
-                except Exception as e:
-                    print(f"⚠️ Error with {kod} / {mod}: {e}")
-                    continue
-
-        print("❌ No valid combination found. Skipping.")
-    except Exception as e:
-        print(f"❌ Failed to load page: {e}")
-    finally:
-        driver.quit()
-
-    return False
-
-# Run every hour for 5 hours
-start_time = datetime.datetime.now()
-max_runtime = 5 * 60 * 60
-LOCAL_TZ = pytz.timezone("Asia/Kuala_Lumpur")
-
-while (datetime.datetime.now() - start_time).total_seconds() < max_runtime:
-    now_local = datetime.datetime.now(LOCAL_TZ)
-    print(f"🕒 Checking attendance at {now_local.strftime('%H:%M:%S')}")
-
-    success = mark_attendance()
-
-    if success:
-        print("🛌 Sleeping for 1 hour...")
-        time.sleep(3600)
-    else:
-        print("⏳ Will retry in 5 minutes...")
-        time.sleep(300)
-
-print("✅ Script completed after 5 hours.")
