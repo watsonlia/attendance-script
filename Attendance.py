@@ -5,10 +5,12 @@ import time
 import datetime
 import requests
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 import pytz
 
 print("✅ Attendance script is running on GitHub Actions...")
@@ -35,7 +37,8 @@ def mark_attendance():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    driver = webdriver.Chrome(options=chrome_options)
+    # Use WebDriverManager to automatically handle ChromeDriver setup
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     driver.get("https://www.phyvis2.com/hadirkmk")
 
     try:
@@ -94,7 +97,8 @@ def mark_attendance():
                         print("✅ Attendance marked successfully!")
                         driver.quit()
                         return True
-                    except:
+                    except Exception as e:
+                        print(f"⚠️ Error marking attendance for {kod} | {mod}: {e}")
                         continue
                 except Exception as e:
                     print(f"⚠️ Error with {kod} / {mod}: {e}")
