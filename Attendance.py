@@ -54,21 +54,21 @@ def mark_attendance():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    chrome_version = get_chrome_version()
+    # Force use of Chrome version 114
+    chrome_version = "114"  # Set this to 114
 
     try:
-        if chrome_version:
-            driver_path = ChromeDriverManager(version=chrome_version).install()
-        else:
-            print("⚠️ Chrome version could not be detected. Using latest driver.")
-            driver_path = ChromeDriverManager().install()
+        driver_path = ChromeDriverManager(version=chrome_version).install()
+        print(f"Using ChromeDriver for version {chrome_version}")
     except Exception as e:
         print(f"⚠️ Error installing ChromeDriver: {e}")
-        print("⚠️ Falling back to the latest available driver...")
-        driver_path = ChromeDriverManager().install()
+        driver_path = ChromeDriverManager().install()  # Fallback to the latest driver
 
-    driver = webdriver.Chrome(service=Service(driver_path), options=chrome_options)
-    driver.get("https://www.phyvis2.com/hadirkmk")
+    try:
+        driver = webdriver.Chrome(service=Service(driver_path), options=chrome_options)
+        driver.get("https://www.phyvis2.com/hadirkmk")
+        # Continue with the rest of your script...
+
 
     try:
         matric_input = WebDriverWait(driver, 10).until(
