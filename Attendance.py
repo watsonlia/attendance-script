@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 import pytz
 import subprocess
 import re
@@ -21,8 +22,7 @@ MATRIC_NO = "MS2418123549"
 def get_chrome_version():
     try:
         output = subprocess.check_output(
-            "chromium-browser --version || chromium --version || google-chrome --version",
-            shell=True
+            "google-chrome --version", shell=True
         ).decode()
         match = re.search(r"(\d+\.\d+\.\d+\.\d+)", output)
         if match:
@@ -54,13 +54,22 @@ def mark_attendance():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    # Specify the full path to your ChromeDriver
-    chrome_driver_path = r"C:\EASON\chromedriver-win64\chromedriver.exe"
+    chrome_version = get_chrome_version()
 
     try:
-        driver = webdriver.Chrome(service=Service(chrome_driver_path), options=chrome_options)
-        driver.get("https://www.phyvis2.com/hadirkmk")
+        if chrome_version:
+            driver_path = ChromeDriverManager(version=chrome_version).install()
+        else:
+            print("⚠️ Chrome version could not be detected. Using latest driver.")
+            driver_path = ChromeDriverManager().install()
+    except Exception as e:
+        print(f"⚠️ Error installing ChromeDriver: {e}")
+        return False
 
+    driver = webdriver.Chrome(service=Service(driver_path), options=chrome_options)
+    driver.get("https://www.phyvis2.com/hadirkmk")
+
+    try:
         matric_input = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.NAME, "Masukkan no matrik"))
         )
