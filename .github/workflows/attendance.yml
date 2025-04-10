@@ -18,15 +18,19 @@ jobs:
         with:
           python-version: "3.10"
 
-      # Install Chrome version 114
+      # Install Chrome version 114 via apt repository
       - name: Install Google Chrome 114
         run: |
-          # Uninstall any existing Google Chrome versions
           sudo apt-get remove -y google-chrome-stable
           
-          # Install Google Chrome version 114 explicitly
-          wget https://dl.google.com/linux/direct/google-chrome-stable_114.0.5735.91-1_amd64.deb
-          sudo apt install -y ./google-chrome-stable_114.0.5735.91-1_amd64.deb
+          # Add the specific Chrome repository
+          wget -q -O - https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb > google-chrome-stable.deb
+          sudo apt install -y ./google-chrome-stable.deb
+
+          # If that does not work, try downloading from a known URL
+          wget https://dl.google.com/linux/direct/google-chrome-stable_114.0.5735.91-1_amd64.deb -O chrome_deb
+          sudo dpkg -i chrome_deb
+
           google-chrome --version  # To verify the installed version
 
       # Install dependencies
@@ -36,7 +40,3 @@ jobs:
       # Clear WebDriver Manager Cache
       - name: Clear WebDriver Manager Cache
         run: rm -rf ~/.cache/selenium
-
-      # Run the Attendance script
-      - name: Run Attendance Script
-        run: python Attendance.py
