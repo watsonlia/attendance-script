@@ -55,11 +55,8 @@ def mark_attendance():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    chrome_version = get_chrome_version()
-    if chrome_version:
-        driver_path = ChromeDriverManager(version=chrome_version).install()
-    else:
-        driver_path = ChromeDriverManager().install()
+   driver_path = ChromeDriverManager().install()
+
 
     driver = webdriver.Chrome(service=Service(driver_path), options=chrome_options)
     driver.get("https://www.phyvis2.com/hadirkmk")
