@@ -37,8 +37,12 @@ def mark_attendance():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    # Use WebDriverManager to automatically handle ChromeDriver setup
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    # Attempt to fetch the version of ChromeDriver
+    driver_version = ChromeDriverManager().install()
+    print(f"Using ChromeDriver version: {driver_version}")
+
+    # Use the installed ChromeDriver
+    driver = webdriver.Chrome(service=Service(driver_version), options=chrome_options)
     driver.get("https://www.phyvis2.com/hadirkmk")
 
     try:
@@ -130,6 +134,3 @@ while (datetime.datetime.now() - start_time).total_seconds() < max_runtime:
         time.sleep(300)
 
 print("✅ Script completed after 5 hours.")
-
-#cd C:\Users\Kim\PycharmProjects\pythonProject
-#to run in control panel
