@@ -21,7 +21,10 @@ MATRIC_NO = "MS2418123549"
 
 def get_chrome_version():
     try:
-        output = subprocess.check_output("chromium-browser --version || chromium --version || google-chrome --version", shell=True).decode()
+        output = subprocess.check_output(
+            "chromium-browser --version || chromium --version || google-chrome --version",
+            shell=True
+        ).decode()
         match = re.search(r"(\d+\.\d+\.\d+\.\d+)", output)
         if match:
             version = match.group(1)
@@ -47,12 +50,17 @@ def mark_attendance():
         print("❌ No internet! Skipping.")
         return False
 
-      chrome_options = Options()
+    chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    driver_path = ChromeDriverManager().install()
+    chrome_version = get_chrome_version()
+    if chrome_version:
+        driver_path = ChromeDriverManager(version=chrome_version).install()
+    else:
+        driver_path = ChromeDriverManager().install()
+
     driver = webdriver.Chrome(service=Service(driver_path), options=chrome_options)
     driver.get("https://www.phyvis2.com/hadirkmk")
 
@@ -79,6 +87,7 @@ def mark_attendance():
             for mod in mod_options:
                 try:
                     driver.get("https://www.phyvis2.com/hadirkmk")
+
                     matric_input = WebDriverWait(driver, 10).until(
                         EC.presence_of_element_located((By.NAME, "Masukkan no matrik"))
                     )
@@ -122,6 +131,7 @@ def mark_attendance():
         print(f"❌ Failed to load page: {e}")
     finally:
         driver.quit()
+
     return False
 
 # Run every hour for 5 hours
