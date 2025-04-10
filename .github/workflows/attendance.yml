@@ -18,20 +18,20 @@ jobs:
         with:
           python-version: "3.10"
 
+      # Install Google Chrome (not Chromium)
+      - name: Install Google Chrome
+        run: |
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt install -y ./google-chrome-stable_current_amd64.deb
+          google-chrome --version
+
       # Install dependencies
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Install Chromium
-      - name: Install Chromium
-        run: |
-          sudo apt update
-          sudo apt install -y chromium-browser
-
       # Clear WebDriver Manager Cache
       - name: Clear WebDriver Manager Cache
-        run: |
-          rm -rf ~/.cache/selenium
+        run: rm -rf ~/.cache/selenium
 
       # Run the Attendance script
       - name: Run Attendance Script
