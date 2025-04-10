@@ -18,12 +18,16 @@ jobs:
         with:
           python-version: "3.10"
 
-      # Install the latest version of Google Chrome
-      - name: Install Latest Google Chrome
+      # Install Chrome version 114
+      - name: Install Google Chrome 114
         run: |
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt install -y ./google-chrome-stable_current_amd64.deb
-          google-chrome --version
+          # Uninstall any existing Google Chrome versions
+          sudo apt-get remove -y google-chrome-stable
+          
+          # Install Google Chrome version 114 explicitly
+          wget https://dl.google.com/linux/direct/google-chrome-stable_114.0.5735.91-1_amd64.deb
+          sudo apt install -y ./google-chrome-stable_114.0.5735.91-1_amd64.deb
+          google-chrome --version  # To verify the installed version
 
       # Install dependencies
       - name: Install dependencies
