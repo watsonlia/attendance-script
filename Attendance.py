@@ -64,7 +64,8 @@ def mark_attendance():
             driver_path = ChromeDriverManager().install()
     except Exception as e:
         print(f"⚠️ Error installing ChromeDriver: {e}")
-        return False
+        print("⚠️ Falling back to the latest available driver...")
+        driver_path = ChromeDriverManager().install()
 
     driver = webdriver.Chrome(service=Service(driver_path), options=chrome_options)
     driver.get("https://www.phyvis2.com/hadirkmk")
