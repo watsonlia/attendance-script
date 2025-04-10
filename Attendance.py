@@ -63,6 +63,21 @@ def mark_attendance():
                 driver_path = ChromeDriverManager(version=chrome_version).install()
             except ValueError as e:
                 print(f"⚠️ Error with ChromeDriverManager: {e}")
+                print("⚠️ Falling back to the latest available driver...")
+                driver_path = ChromeDriverManager().install()  # Fallback to latest available driver
+        else:
+            print("⚠️ Chrome version could not be detected. Using latest driver.")
+            driver_path = ChromeDriverManager().install()
+    except Exception as e:
+        print(f"⚠️ Error installing ChromeDriver: {e}")
+        return False
+
+    try:
+        if chrome_version:
+            try:
+                driver_path = ChromeDriverManager(version=chrome_version).install()
+            except ValueError as e:
+                print(f"⚠️ Error with ChromeDriverManager: {e}")
                 driver_path = ChromeDriverManager().install()  # Fallback to latest available driver
         else:
             print("⚠️ Chrome version could not be detected. Using latest driver.")
